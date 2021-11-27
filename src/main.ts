@@ -8,14 +8,30 @@ let scene: THREE.Scene,
   box: THREE.Mesh,
   box2: THREE.Mesh,
   box3: THREE.Mesh;
+
 init();
+
 function init() {
+  // Create scene, camera, light and renderer
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x2aaaaa);
+  scene.background = new THREE.Color(0x211111);
+  camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1, // near
+    1000 // far
+  );
+  camera.position.z = 2;
+  renderer = new THREE.WebGL1Renderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  app?.appendChild(renderer.domElement);
+  // Create geometry and material
   const geometry = new THREE.BoxGeometry(1, 1, 1);
   const material = new THREE.MeshStandardMaterial({
     color: new THREE.Color("skyblue"),
   });
+
+  // Create mesh
   box = new THREE.Mesh(geometry, material);
   scene.add(box);
   box2 = new THREE.Mesh(geometry, material);
@@ -27,20 +43,10 @@ function init() {
   const light = new THREE.DirectionalLight();
   light.position.set(0, 1, 2);
   scene.add(light);
-  camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  );
-  camera.position.z = 2;
 
-  renderer = new THREE.WebGL1Renderer();
-  renderer.setSize(window.innerWidth, window.innerHeight);
   window.addEventListener("resize", onResize);
 
-  app?.appendChild(renderer.domElement);
-
+  // Animate
   update();
 }
 
@@ -49,6 +55,8 @@ function update() {
   box.rotation.y += 0.01;
   box2.rotation.x -= 0.01;
   box3.rotation.z -= 0.01;
+
+  // Render it
   renderer.render(scene, camera);
 }
 function onResize() {
